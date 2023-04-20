@@ -11,7 +11,7 @@ debug = DebugToolbarExtension(app)
 
 @app.get("/")
 def home_page():
-    """Creates the homepages"""
+    """Creates the homepage"""
 
     session["responses"] = []
 
@@ -20,6 +20,8 @@ def home_page():
 @app.post("/begin")
 def start_survey():
     """Starts the given survey"""
+
+    session["responses"] = []
 
     return redirect("/questions/0")
 

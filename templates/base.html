@@ -7,8 +7,9 @@
   <title>Flask Survey</title>
 </head>
 <body>
-{% with messages = get_flashed_messages() %}
-{% endwith %}
+{% for msg in get_flashed_messages() %}
+  <p>{{ msg }}</p>
+{% endfor %}
 {% block content %}
 {% endblock %}
 
