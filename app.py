@@ -28,20 +28,26 @@ def question_page(question_number):
 
     current_question = survey.questions[question_number]
 
-    return render_template("question.html", question = current_question, qestion_number=question_number)
+    return render_template("question.html", question = current_question, question_number=question_number)
 
 @app.post("/answer/<int:question_number>")
 def submit_answer(question_number):
-
+    #  """checks for answer, if answer, continue to next question"""
     answer = request.form.get("answer")
 
     if answer:
         RESPONSES.append(answer)
         question_number += 1
         if question_number == len(survey.questions):
-            redirect("/completion")
+            return redirect("/completion")
         else:
-            redirect(f"/questions/{question_number}")
+            return redirect(f"/questions/{question_number}")
+    else:
+        return redirect(f"/questions/{question_number}")
+
+@app.get("/completion")
+def completion():
+    return render_template("completion.html", responses=RESPONSES, questions=survey.questions)
 
 
 

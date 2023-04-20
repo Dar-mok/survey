@@ -3,5 +3,14 @@
 {% block content %}
 
   <h1>Thanks for completing this survey!</h1>
+  <div>
+    <ul>
+    {% for i in range({{len(responses)}}) %}
+    <li>
+      {{ questions[i] + ":" + responses[i] }}
+    </li>
+    {% endfor %}
+    </ul>
+  </div>
 
 {% endblock %}
