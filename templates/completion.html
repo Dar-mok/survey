@@ -5,9 +5,10 @@
   <h1>Thanks for completing this survey!</h1>
   <div>
     <ul>
-    {% for i in range({{len(responses)}}) %}
+    {% for question in questions %}
     <li>
-      {{ questions[i] + ":" + responses[i] }}
+      <span>{{question.prompt}}</span>
+      {{responses[loop.index0] }}
     </li>
     {% endfor %}
     </ul>
