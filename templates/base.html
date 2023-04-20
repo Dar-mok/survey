@@ -7,7 +7,8 @@
   <title>Flask Survey</title>
 </head>
 <body>
-
+{% with messages = get_flashed_messages() %}
+{% endwith %}
 {% block content %}
 {% endblock %}
 

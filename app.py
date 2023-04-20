@@ -13,13 +13,13 @@ debug = DebugToolbarExtension(app)
 def home_page():
     """Creates the homepages"""
 
+    session["responses"] = []
+
     return render_template("survey_start.html",title=survey.title, instructions=survey.instructions)
 
 @app.post("/begin")
 def start_survey():
     """Starts the given survey"""
-
-    session[“responses”] = []
 
     return redirect("/questions/0")
 
@@ -27,8 +27,11 @@ def start_survey():
 def question_page(question_number):
     """Loads the page for the current question"""
 
-    if question_number > len(survey.questions):
-        return redirect(f"/questions/{len(session[“responses”])}")
+    current_sesh = session["responses"]
+
+    if question_number > len(current_sesh):
+        flash("You are out of bounds")
+        return redirect(f"/questions/{len(current_sesh)}")
 
     question = survey.questions[question_number]
 
@@ -38,18 +41,20 @@ def question_page(question_number):
 def submit_answer():
     """checks for answer, if answer, continue to next question"""
 
+    current_sesh = session["responses"]
     answer = request.form["answer"]
     if answer:
-        session[“responses”].append(answer)
-        if len(session[“responses”]) >= len(survey.questions):
+        current_sesh.append(answer)
+        session["responses"] = current_sesh
+        if len(current_sesh) >= len(survey.questions):
             return redirect("/completion")
-    return redirect(f"/questions/{len(session[“responses”])}")
+    return redirect(f"/questions/{len(current_sesh)}")
 
 @app.get("/completion")
 def completion():
     """Sends user to survery completion page"""
 
-    return render_template("completion.html", responses=session[“responses”], questions=survey.questions)
+    return render_template("completion.html", responses=session["responses"], questions=survey.questions)
 
 
 
