@@ -8,13 +8,14 @@ app.config['DEBUG_TB_INTERCEPT_REDIRECTS'] = False
 
 debug = DebugToolbarExtension(app)
 
+#TODO: replace key with session_key
+SESSION_KEY = "responses"
 
 @app.get("/")
 def home_page():
     """Creates the homepage"""
 
-    session["responses"] = []
-
+    #TODO: pass in full survey to Jinja
     return render_template("survey_start.html",title=survey.title, instructions=survey.instructions)
 
 @app.post("/begin")
@@ -29,9 +30,13 @@ def start_survey():
 def question_page(question_number):
     """Loads the page for the current question"""
 
+    #TODO: refactor to not use variable
     current_sesh = session["responses"]
 
-    if question_number > len(current_sesh):
+    if len(current_sesh) >= len(survey.questions):
+        return redirect("/completion")
+
+    if question_number != len(current_sesh):
         flash("You are out of bounds")
         return redirect(f"/questions/{len(current_sesh)}")
 
@@ -45,11 +50,10 @@ def submit_answer():
 
     current_sesh = session["responses"]
     answer = request.form["answer"]
+
     if answer:
         current_sesh.append(answer)
         session["responses"] = current_sesh
-        if len(current_sesh) >= len(survey.questions):
-            return redirect("/completion")
     return redirect(f"/questions/{len(current_sesh)}")
 
 @app.get("/completion")
